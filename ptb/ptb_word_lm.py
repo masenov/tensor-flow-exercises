@@ -62,6 +62,7 @@ import numpy as np
 import tensorflow as tf
 
 import reader
+import sys
 
 flags = tf.flags
 logging = tf.logging
@@ -297,6 +298,8 @@ def run_epoch(session, model, eval_op=None, verbose=False):
       print("%.3f perplexity: %.3f speed: %.0f wps" %
             (step * 1.0 / model.input.epoch_size, np.exp(costs / iters),
              iters * model.input.batch_size / (time.time() - start_time)))
+      sys.stdout.flush()
+
 
   return np.exp(costs / iters)
 
@@ -356,17 +359,27 @@ def main(_):
         m.assign_lr(session, config.learning_rate * lr_decay)
 
         print("Epoch: %d Learning rate: %.3f" % (i + 1, session.run(m.lr)))
+        sys.stdout.flush()
+
         train_perplexity = run_epoch(session, m, eval_op=m.train_op,
                                      verbose=True)
         print("Epoch: %d Train Perplexity: %.3f" % (i + 1, train_perplexity))
+        sys.stdout.flush()
+
         valid_perplexity = run_epoch(session, mvalid)
         print("Epoch: %d Valid Perplexity: %.3f" % (i + 1, valid_perplexity))
+        sys.stdout.flush()
+
 
       test_perplexity = run_epoch(session, mtest)
       print("Test Perplexity: %.3f" % test_perplexity)
+      sys.stdout.flush()
+
 
       if FLAGS.save_path:
         print("Saving model to %s." % FLAGS.save_path)
+        sys.stdout.flush()
+
         sv.saver.save(session, FLAGS.save_path, global_step=sv.global_step)
 
 
