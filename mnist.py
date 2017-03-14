@@ -1,7 +1,7 @@
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
-
+print (mnist.train.next_batch)
 # Connection to C++ backend
 import tensorflow as tf
 sess = tf.InteractiveSession()
@@ -21,7 +21,7 @@ sess.run(tf.global_variables_initializer())
 y = tf.matmul(x,W) + b
 
 # Build an error function
-cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y, y_))
+cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=y, labels=y_))
 
 # Train the model with steepest gradient descent
 train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
